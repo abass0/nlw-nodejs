@@ -10,7 +10,7 @@ class User {
     @Column()
     name: string;
 
-    @CreateDateColumn()
+    @Column()
     email: string;
 
     @Column()
@@ -19,7 +19,7 @@ class User {
     @CreateDateColumn()
     created_at: Date;
 
-    @CreateDateColumn()
+    @UpdateDateColumn()
     updated_at: Date;
 
     constructor(){
