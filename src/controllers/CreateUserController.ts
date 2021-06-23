@@ -14,3 +14,5 @@ class CreateUserController{
 }
 
 export {CreateUserController};
+
+// Server -> Routes -> Controller -> Service -> DB
