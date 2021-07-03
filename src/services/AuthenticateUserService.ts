@@ -1,44 +1,50 @@
-import { getCustomRepository } from "typeorm"
-import { UsersRepositories } from "../repositories/UsersRepositories"
-import { compare } from "bcryptjs"
-import { sign } from "jsonwebtoken"
+import { getCustomRepository } from "typeorm";
+import { compare } from "bcryptjs";
+import { sign } from "jsonwebtoken";
 
+import { UsersRepositories } from "../repositories/UsersRepositories";
 
-interface IAuthenticateRequest{
-    email: string;
-    password: string;
+interface IAuthenticateRequest {
+  email: string;
+  password: string;
 }
 
 class AuthenticateUserService {
-    async execute({email, password}: IAuthenticateRequest) {
-        const usersRepositories = getCustomRepository(UsersRepositories);
+  async execute({ email, password }: IAuthenticateRequest) {
+    const usersRepositories = getCustomRepository(UsersRepositories);
 
-        //verify valid email
-        const user = await usersRepositories.findOne({
-            email
-        });
+    // Verificar se email existe
+    const user = await usersRepositories.findOne({
+      email,
+    });
 
-        if (!user){
-            throw new Error("Email/Password incorrect")
-        }
-
-        // verify valid password
-        const passwordMatch = await compare(password, user.password)
-
-        if (!passwordMatch){
-            throw new Error("Email/Password incorrect")
-        }
-
-        //generate token
-        
-        const token = sign({
-            email: user.email
-        }, "97afc8c88c9881d7292cd02262093558", {
-            subject : user.id,
-            expiresIn : "1d"
-        });
-        return token;
+    if (!user) {
+      throw new Error("Email/Password incorrect");
     }
+
+    // verificar se senha está correta
+
+    // 123456 / 783645734-sdhfhsdf7762374234234
+    const passwordMatch = await compare(password, user.password);
+
+    if (!passwordMatch) {
+      throw new Error("Email/Password incorrect");
+    }
+
+    // Gerar token
+    const token = sign(
+      {
+        email: user.email,
+      },
+      "4f93ac9d10cb751b8c9c646bc9dbccb9",
+      {
+        subject: user.id,
+        expiresIn: "1d",
+      }
+    );
+
+    return token;
+  }
 }
 
 export { AuthenticateUserService };
